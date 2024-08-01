@@ -1,8 +1,10 @@
 from tkinter import Tk, BOTH, Canvas
+from graphics.shapes.line import Line
+from graphics.shapes.point import Point
 
 
 class Window:
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
 
@@ -16,6 +18,9 @@ class Window:
         self.__canvas.pack(fill=BOTH, expand=1)
 
         self.__running = False
+
+    def draw_line(self, line: Line, fill_color: str):
+        line.draw(self.__canvas, fill_color)
 
     def redraw(self):
         self.__root_widget.update_idletasks()
