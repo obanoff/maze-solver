@@ -57,3 +57,16 @@ class Cell:
 
         for wall in walls:
             self.__win.draw_line(wall, fill_color)
+
+    def draw_move(self, to_cell: "Cell", undo=False):
+        center1_x = (self.__point2.x - self.__point1.x) / 2 + self.__point1.x
+        center1_y = (self.__point2.y - self.__point1.y) / 2 + self.__point1.y
+
+        center2_x = (to_cell.__point2.x - to_cell.__point1.x) / 2 + to_cell.__point1.x
+        center2_y = (to_cell.__point2.y - to_cell.__point1.y) / 2 + to_cell.__point1.y
+        line = Line(Point(center1_x, center1_y), Point(center2_x, center2_y))
+
+        if undo:
+            self.__win.draw_line(line, "gray")
+        else:
+            self.__win.draw_line(line, "red")

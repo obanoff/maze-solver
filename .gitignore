@@ -1,2 +1,14 @@
+# Ignore Python bytecode files
 __pycache__/*
-*/__pycache__/*
+graphics/shapes/__pycache__/*
+
+# Ignore other files and directories
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+
+# Ignore virtual environment
+venv/
+
