@@ -22,40 +22,43 @@ class Cell:
         self.__point2 = point2
         self.__win = win
 
+        self.line_ids = []
+
     def draw(self, fill_color: str):
-        walls = {}
+        walls = []
 
-        top_wall = Line(
-            Point(self.__point1.x, self.__point1.y),
-            Point(self.__point2.x, self.__point1.y),
-        )
-        walls[top_wall] = self.has_top
+        if self.has_top:
+            line = Line(
+                Point(self.__point1.x, self.__point1.y),
+                Point(self.__point2.x, self.__point1.y),
+            )
+            walls.append(line)
 
-        right_wall = Line(
-            Point(self.__point2.x, self.__point1.y),
-            Point(self.__point2.x, self.__point2.y),
-        )
-        walls[right_wall] = self.has_right
+        if self.has_right:
+            line = Line(
+                Point(self.__point2.x, self.__point1.y),
+                Point(self.__point2.x, self.__point2.y),
+            )
+            walls.append(line)
 
-        bottom_wall = Line(
-            Point(self.__point1.x, self.__point2.y),
-            Point(self.__point2.x, self.__point2.y),
-        )
-        walls[bottom_wall] = self.has_bottom
+        if self.has_bottom:
+            line = Line(
+                Point(self.__point1.x, self.__point2.y),
+                Point(self.__point2.x, self.__point2.y),
+            )
+            walls.append(line)
 
-        left_wall = Line(
-            Point(self.__point1.x, self.__point1.y),
-            Point(self.__point1.x, self.__point2.y),
-        )
-        walls[left_wall] = self.has_left
+        if self.has_left:
+            line = Line(
+                Point(self.__point1.x, self.__point1.y),
+                Point(self.__point1.x, self.__point2.y),
+            )
+            walls.append(line)
 
         # for testing purposes
         if type(self.__win) == Window:
             for wall in walls:
-                if walls[wall]:
-                    self.__win.draw_line(wall, fill_color)
-                else:
-                    self.__win.draw_line(wall, "white")
+                self.line_ids.append(self.__win.draw_line(wall, fill_color))
 
     def draw_move(self, to_cell: "Cell", undo=False):
         if type(self.__win) != Window:

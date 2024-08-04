@@ -8,7 +8,7 @@ class Line:
         self.__point_two = point_two
 
     def draw(self, canvas: Canvas, fill_color: str):
-        canvas.create_line(
+        id = canvas.create_line(
             self.__point_one.x,
             self.__point_one.y,
             self.__point_two.x,
@@ -16,3 +16,5 @@ class Line:
             fill=fill_color,
             width=2,
         )
+
+        return id

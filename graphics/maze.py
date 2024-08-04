@@ -72,11 +72,12 @@ class Maze:
         sleep(0.05)
 
     def __break_entrance_and_exit(self):
-        self.__cells[0][0].has_top = False
-        self.__cells[-1][-1].has_bottom = False
+        id1 = self.__cells[0][0].line_ids[0]
+        id2 = self.__cells[-1][-1].line_ids[2]
 
-        self.__cells[0][0].draw("blue")
-        self.__cells[-1][-1].draw("blue")
+        if type(self.__win) == Window:
+            self.__win._canvas.delete(id1)
+            self.__win._canvas.delete(id2)
 
     # for testing purposes
     @property
