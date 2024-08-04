@@ -1,5 +1,3 @@
-from tkinter import Canvas
-
 from graphics.window import Window
 from graphics.shapes.point import Point
 from graphics.shapes.line import Line
@@ -10,7 +8,7 @@ class Cell:
         self,
         point1: Point,
         point2: Point,
-        win: Window,
+        win: None | Window = None,  # default: None - for testing purposes
         has_left=True,
         has_right=True,
         has_top=True,
@@ -25,40 +23,44 @@ class Cell:
         self.__win = win
 
     def draw(self, fill_color: str):
-        walls = []
+        walls = {}
 
-        if self.has_top:
-            line = Line(
-                Point(self.__point1.x, self.__point1.y),
-                Point(self.__point2.x, self.__point1.y),
-            )
-            walls.append(line)
+        top_wall = Line(
+            Point(self.__point1.x, self.__point1.y),
+            Point(self.__point2.x, self.__point1.y),
+        )
+        walls[top_wall] = self.has_top
 
-        if self.has_right:
-            line = Line(
-                Point(self.__point2.x, self.__point1.y),
-                Point(self.__point2.x, self.__point2.y),
-            )
-            walls.append(line)
+        right_wall = Line(
+            Point(self.__point2.x, self.__point1.y),
+            Point(self.__point2.x, self.__point2.y),
+        )
+        walls[right_wall] = self.has_right
 
-        if self.has_bottom:
-            line = Line(
-                Point(self.__point1.x, self.__point2.y),
-                Point(self.__point2.x, self.__point2.y),
-            )
-            walls.append(line)
+        bottom_wall = Line(
+            Point(self.__point1.x, self.__point2.y),
+            Point(self.__point2.x, self.__point2.y),
+        )
+        walls[bottom_wall] = self.has_bottom
 
-        if self.has_left:
-            line = Line(
-                Point(self.__point1.x, self.__point1.y),
-                Point(self.__point1.x, self.__point2.y),
-            )
-            walls.append(line)
+        left_wall = Line(
+            Point(self.__point1.x, self.__point1.y),
+            Point(self.__point1.x, self.__point2.y),
+        )
+        walls[left_wall] = self.has_left
 
-        for wall in walls:
-            self.__win.draw_line(wall, fill_color)
+        # for testing purposes
+        if type(self.__win) == Window:
+            for wall in walls:
+                if walls[wall]:
+                    self.__win.draw_line(wall, fill_color)
+                else:
+                    self.__win.draw_line(wall, "white")
 
     def draw_move(self, to_cell: "Cell", undo=False):
+        if type(self.__win) != Window:
+            raise Exception("Window object not provided")
+
         center1_x = (self.__point2.x - self.__point1.x) / 2 + self.__point1.x
         center1_y = (self.__point2.y - self.__point1.y) / 2 + self.__point1.y
 

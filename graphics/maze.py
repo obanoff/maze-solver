@@ -15,7 +15,7 @@ class Maze:
         num_cols: int,
         cell_size_x: int,
         cell_size_y: int,
-        win: Window,
+        win: Window | None = None,
     ):
         self.__x1 = x1
         self.__y1 = y1
@@ -30,15 +30,19 @@ class Maze:
         self.__create_cells()
 
     def __create_cells(self):
-        if self.__cell_size_x * self.__num_cols + self.__x1 > self.__win.width:
-            raise Exception("window cannot contain the number of columns")
+        # for testing purposes
+        if type(self.__win) == Window:
+            if self.__cell_size_x * self.__num_cols + self.__x1 > self.__win.width:
+                raise Exception("window cannot contain the number of columns")
 
-        if self.__cell_size_y * self.__num_rows + self.__y1 > self.__win.height:
-            raise Exception("window cannot contain the number of rows")
+            if self.__cell_size_y * self.__num_rows + self.__y1 > self.__win.height:
+                raise Exception("window cannot contain the number of rows")
 
         for i in range(self.__num_cols):
             column = [self.__draw_cell(i, j) for j in range(self.__num_rows)]
             self.__cells.append(column)
+
+        self.__break_entrance_and_exit()
 
     def __draw_cell(self, i, j):
         point1 = Point(
@@ -60,5 +64,21 @@ class Maze:
         return cell
 
     def __animate(self):
+        # for testing purposes
+        if type(self.__win) != Window:
+            return
+
         self.__win.redraw()
         sleep(0.05)
+
+    def __break_entrance_and_exit(self):
+        self.__cells[0][0].has_top = False
+        self.__cells[-1][-1].has_bottom = False
+
+        self.__cells[0][0].draw("blue")
+        self.__cells[-1][-1].draw("blue")
+
+    # for testing purposes
+    @property
+    def cells(self):
+        return self.__cells
