@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from time import sleep
 
 from graphics.window import Window
@@ -25,7 +25,7 @@ class Maze:
         self.__cell_size_y = cell_size_y
         self.__win = win
 
-        self.__cells: List[List[Optional[Cell]]] = [[]]
+        self.__cells: List[List[Cell]] = []
 
         self.__create_cells()
 
@@ -36,13 +36,9 @@ class Maze:
         if self.__cell_size_y * self.__num_rows + self.__y1 > self.__win.height:
             raise Exception("window cannot contain the number of rows")
 
-        self.__cells = [
-            [None for _ in range(self.__num_rows)] for _ in range(self.__num_cols)
-        ]
-
-        for i, column in enumerate(self.__cells):
-            for j, cell in enumerate(column):
-                column[j] = self.__draw_cell(i, j)
+        for i in range(self.__num_cols):
+            column = [self.__draw_cell(i, j) for j in range(self.__num_rows)]
+            self.__cells.append(column)
 
     def __draw_cell(self, i, j):
         point1 = Point(
