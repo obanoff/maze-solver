@@ -33,6 +33,8 @@ class Maze:
 
         self.__create_cells()
 
+        self.__break_walls_r(0, 0)
+
     def __create_cells(self):
         # for testing purposes
         if type(self.__win) == Window:
@@ -78,6 +80,9 @@ class Maze:
     def __break_entrance_and_exit(self):
         id1 = self.__cells[0][0]._line_ids["top"]
         id2 = self.__cells[-1][-1]._line_ids["bottom"]
+
+        self.__cells[0][0].has_top = False
+        self.__cells[-1][-1].has_bottom = False
 
         if type(self.__win) == Window:
             self.__win._canvas.delete(id1)
@@ -128,8 +133,10 @@ class Maze:
                     current.has_left = False
                     move_to_cell.has_right = False
 
-            current.redraw("blue")
-            move_to_cell.redraw("blue")
+            current.draw("blue")
+            move_to_cell.draw("blue")
+
+            self.__animate()
 
             self.__break_walls_r(*move_to)
 

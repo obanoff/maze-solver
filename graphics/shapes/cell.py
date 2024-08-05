@@ -58,32 +58,16 @@ class Cell:
             walls["left"] = line
 
         # for testing purposes
-        if type(self.__win) == Window:
-            for key in walls:
-                self._line_ids[key] = self.__win.draw_line(walls[key], fill_color)
-
-    def redraw(self, fill_color: str):
-        # for testing purposes
         if self.__win is None:
             return
 
-        if not self.has_top and self._line_ids["top"]:
-            self.__win._canvas.delete(self._line_ids["top"])
-            del self._line_ids["top"]
+        for direction in ["top", "right", "bottom", "left"]:
+            if direction in self._line_ids:
+                self.__win._canvas.delete(self._line_ids[direction])
+                del self._line_ids[direction]
 
-        if not self.has_right and self._line_ids["right"]:
-            self.__win._canvas.delete(self._line_ids["right"])
-            del self._line_ids["right"]
-
-        if not self.has_bottom and self._line_ids["bottom"]:
-            self.__win._canvas.delete(self._line_ids["bottom"])
-            del self._line_ids["bottom"]
-
-        if not self.has_left and self._line_ids["left"]:
-            self.__win._canvas.delete(self._line_ids["left"])
-            del self._line_ids["left"]
-
-        self.draw(fill_color)
+        for key in walls:
+            self._line_ids[key] = self.__win.draw_line(walls[key], fill_color)
 
     def draw_move(self, to_cell: "Cell", undo=False):
         if type(self.__win) != Window:
