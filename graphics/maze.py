@@ -80,13 +80,12 @@ class Maze:
         sleep(0.05)
 
     def __break_entrance_and_exit(self):
-        id1 = self.__cells[0][0]._line_ids["top"]
-        id2 = self.__cells[-1][-1]._line_ids["bottom"]
-
         self.__cells[0][0].has_top = False
         self.__cells[-1][-1].has_bottom = False
 
         if type(self.__win) == Window:
+            id1 = self.__cells[0][0]._line_ids["top"]
+            id2 = self.__cells[-1][-1]._line_ids["bottom"]
             self.__win._canvas.delete(id1)
             self.__win._canvas.delete(id2)
 
