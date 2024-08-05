@@ -1,5 +1,6 @@
 from typing import List
 from time import sleep
+import random
 
 from graphics.window import Window
 from graphics.shapes.cell import Cell
@@ -16,6 +17,7 @@ class Maze:
         cell_size_x: int,
         cell_size_y: int,
         win: Window | None = None,
+        seed: int | None = None,
     ):
         self.__x1 = x1
         self.__y1 = y1
@@ -24,6 +26,8 @@ class Maze:
         self.__cell_size_x = cell_size_x
         self.__cell_size_y = cell_size_y
         self.__win = win
+
+        random.seed(seed)
 
         self.__cells: List[List[Cell]] = []
 
@@ -72,12 +76,62 @@ class Maze:
         sleep(0.05)
 
     def __break_entrance_and_exit(self):
-        id1 = self.__cells[0][0].line_ids[0]
-        id2 = self.__cells[-1][-1].line_ids[2]
+        id1 = self.__cells[0][0]._line_ids["top"]
+        id2 = self.__cells[-1][-1]._line_ids["bottom"]
 
         if type(self.__win) == Window:
             self.__win._canvas.delete(id1)
             self.__win._canvas.delete(id2)
+
+            del self.__cells[0][0]._line_ids["top"]
+            del self.__cells[-1][-1]._line_ids["bottom"]
+
+    def __break_walls_r(self, i, j):
+        current: Cell = self.__cells[i][j]
+        current._visited = True
+
+        while True:
+            directions = []
+
+            if i + 1 < len(self.__cells) and not self.__cells[i + 1][j]._visited:
+                directions.append((i + 1, j))
+
+            if j + 1 < len(self.__cells[0]) and not self.__cells[i][j + 1]._visited:
+                directions.append((i, j + 1))
+
+            if i - 1 >= 0 and not self.__cells[i - 1][j]._visited:
+                directions.append((i - 1, j))
+
+            if j - 1 >= 0 and not self.__cells[i][j - 1]._visited:
+                directions.append((i, j - 1))
+
+            if len(directions) == 0:
+                current.draw("blue")
+                return
+
+            move_to = random.choice(directions)
+            move_to_cell: Cell = self.__cells[move_to[0]][move_to[1]]
+
+            if move_to[0] == i:
+                if move_to[1] > j:
+                    current.has_bottom = False
+                    move_to_cell.has_top = False
+                else:
+                    current.has_top = False
+                    move_to_cell.has_bottom = False
+
+            if move_to[1] == j:
+                if move_to[0] > i:
+                    current.has_right = False
+                    move_to_cell.has_left = False
+                else:
+                    current.has_left = False
+                    move_to_cell.has_right = False
+
+            current.redraw("blue")
+            move_to_cell.redraw("blue")
+
+            self.__break_walls_r(*move_to)
 
     # for testing purposes
     @property

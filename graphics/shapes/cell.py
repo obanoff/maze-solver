@@ -20,45 +20,70 @@ class Cell:
         self.has_bottom = has_bottom
         self.__point1 = point1
         self.__point2 = point2
+        self._visited = False
+
         self.__win = win
 
-        self.line_ids = []
+        self._line_ids = {}
 
     def draw(self, fill_color: str):
-        walls = []
+        walls = {}
 
         if self.has_top:
             line = Line(
                 Point(self.__point1.x, self.__point1.y),
                 Point(self.__point2.x, self.__point1.y),
             )
-            walls.append(line)
+            walls["top"] = line
 
         if self.has_right:
             line = Line(
                 Point(self.__point2.x, self.__point1.y),
                 Point(self.__point2.x, self.__point2.y),
             )
-            walls.append(line)
+            walls["right"] = line
 
         if self.has_bottom:
             line = Line(
                 Point(self.__point1.x, self.__point2.y),
                 Point(self.__point2.x, self.__point2.y),
             )
-            walls.append(line)
+            walls["bottom"] = line
 
         if self.has_left:
             line = Line(
                 Point(self.__point1.x, self.__point1.y),
                 Point(self.__point1.x, self.__point2.y),
             )
-            walls.append(line)
+            walls["left"] = line
 
         # for testing purposes
         if type(self.__win) == Window:
-            for wall in walls:
-                self.line_ids.append(self.__win.draw_line(wall, fill_color))
+            for key in walls:
+                self._line_ids[key] = self.__win.draw_line(walls[key], fill_color)
+
+    def redraw(self, fill_color: str):
+        # for testing purposes
+        if self.__win is None:
+            return
+
+        if not self.has_top and self._line_ids["top"]:
+            self.__win._canvas.delete(self._line_ids["top"])
+            del self._line_ids["top"]
+
+        if not self.has_right and self._line_ids["right"]:
+            self.__win._canvas.delete(self._line_ids["right"])
+            del self._line_ids["right"]
+
+        if not self.has_bottom and self._line_ids["bottom"]:
+            self.__win._canvas.delete(self._line_ids["bottom"])
+            del self._line_ids["bottom"]
+
+        if not self.has_left and self._line_ids["left"]:
+            self.__win._canvas.delete(self._line_ids["left"])
+            del self._line_ids["left"]
+
+        self.draw(fill_color)
 
     def draw_move(self, to_cell: "Cell", undo=False):
         if type(self.__win) != Window:
