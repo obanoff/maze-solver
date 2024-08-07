@@ -81,6 +81,6 @@ class Cell:
         line = Line(Point(center1_x, center1_y), Point(center2_x, center2_y))
 
         if undo:
-            self.__win.draw_line(line, "gray")
-        else:
             self.__win.draw_line(line, "red")
+        else:
+            self.__win.draw_line(line, "blue")
